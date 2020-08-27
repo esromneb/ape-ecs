@@ -54,6 +54,10 @@ class Entity {
 
 
   has(type) {
+    if (type instanceof BaseComponent) {
+      // type[type.type] may be undefined, so force to a bool with !!
+      return (!!this.types[type.type] && this.types[type.type].has(type));
+    }
 
     return (this.tags.has(type)
       || this.types.hasOwnProperty(type));

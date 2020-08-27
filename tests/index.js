@@ -545,6 +545,42 @@ describe('system queries', () => {
 
   });
 
+  it('entity has accepts object', () => {
+
+    class C0 extends ECS.Component {};
+    class C1 extends ECS.Component {};
+    ecs.registerComponent(C0);
+    ecs.registerComponent(C1);
+
+    const e0 = ecs.createEntity({
+      components: [
+        {
+          type: 'C0',
+          key: 'com0',
+        }
+      ]
+    });
+
+    const e1 = ecs.createEntity({
+      components: [
+        {
+          type: 'C1',
+          key: 'com1',
+        }
+      ]
+    });
+
+    expect(e0.has('C0')).to.be.true;
+    expect(e0.has('C1')).to.be.false;
+    expect(e0.has(e0.c.com0)).to.be.true;
+    expect(e0.has(e1.c.com1)).to.be.false;
+    expect(e1.has('C0')).to.be.false;
+    expect(e1.has('C1')).to.be.true;
+    expect(e1.has(e0.c.com0)).to.be.false;
+    expect(e1.has(e1.c.com1)).to.be.true;
+  });
+
+
   it('tags', () => {
 
     const ecs = new ECS.World();
