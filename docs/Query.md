@@ -125,7 +125,7 @@ Limit the Query `execute` results to only include a subset of these specified en
 * `Query` instance for chaining methods.
 
 ```js
-const query = world.createQuery().from([player, enemy1]);
+const query = world.createQuery().from(player, enemy1);
 ```
 
 ```js
