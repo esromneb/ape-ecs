@@ -570,15 +570,152 @@ describe('system queries', () => {
       ]
     });
 
+    console.log(e0.c.com0.id);
+
     expect(e0.has('C0')).to.be.true;
     expect(e0.has('C1')).to.be.false;
     expect(e0.has(e0.c.com0)).to.be.true;
+    // expect(e0.has(e0.c.com0.id)).to.be.true;
     expect(e0.has(e1.c.com1)).to.be.false;
     expect(e1.has('C0')).to.be.false;
     expect(e1.has('C1')).to.be.true;
     expect(e1.has(e0.c.com0)).to.be.false;
     expect(e1.has(e1.c.com1)).to.be.true;
   });
+
+
+  // from
+  // reverse
+  // all
+  // any
+  // not
+  //
+  // entity id
+  // entity object
+  // component string
+  // component object
+
+  it('queries are consistent', () => {
+
+    ecs.registerTags('TagA');
+
+    // class C0 extends ECS.Component {};
+    // class C1 extends ECS.Component {};
+    // ecs.registerComponent(C0);
+    // ecs.registerComponent(C1);
+
+    const e0 = ecs.createEntity({
+      id: "consistent_e0",
+      components: [
+        {
+          type: 'C0',
+          key: 'com0',
+        }
+      ]
+    });
+
+    const e1 = ecs.createEntity({
+      id: "consistent_e1",
+      components: [
+        {
+          type: 'C1',
+          key: 'com1',
+        }
+      ]
+    });
+
+    const e2 = ecs.createEntity({
+      id: "consistent_e2",
+      components: [
+        {
+          type: 'C0',
+          key: 'com0',
+        },
+        {
+          type: 'C1',
+          key: 'com1',
+        }
+      ]
+    });
+
+    e0.addTag('TagA');
+    e1.addTag('TagA');
+
+
+    // const result = ecs.createQuery()
+    //   .from('C0', 'C1')
+    //   .not('C1')
+    //   .execute();
+
+    const r0 = ecs.createQuery()
+      .from('TagA')
+      // .not('C1')
+      .execute();
+
+    console.log(r0);
+
+    const r1 = ecs.createQuery()
+      .from(e0, e1, e2)
+      // .not('C1')
+      .execute();
+
+    expect(r1.has(e0)).to.be.true;
+    expect(r1.has(e1)).to.be.true;
+    expect(r1.has(e2)).to.be.true;
+
+
+    // not with Component string
+    const r2 = ecs.createQuery()
+      .from(e0, e1, e2)
+      .not('C1')
+      .execute();
+
+    console.log(r2);
+
+    expect(r2.has(e0)).to.be.true;
+    expect(r2.has(e1)).to.be.false;
+    expect(r2.has(e2)).to.be.false;
+    return;
+
+    // not with Component Object
+    const r3 = ecs.createQuery()
+      .from(e0, e1, e2)
+      .not(e1.c.com1)
+      .execute();
+
+    // console.log(r3);
+
+    expect(r3.has(e0)).to.be.true;
+    expect(r3.has(e1)).to.be.false;
+    expect(r3.has(e2)).to.be.true;
+
+    // not with Entity Object
+    const r4 = ecs.createQuery()
+      .from(e0, e1, e2)
+      .not(e0)
+      .execute();
+
+    // console.log(r4);
+
+    expect(r4.has(e0)).to.be.false;
+    expect(r4.has(e1)).to.be.true;
+    expect(r4.has(e2)).to.be.true;
+
+
+    // not with Entity id
+    const r5 = ecs.createQuery()
+      .from(e0, e1, e2)
+      .not(e0.id)
+      .execute();
+
+    console.log(r5);
+
+    expect(r5.has(e0)).to.be.false;
+    expect(r5.has(e1)).to.be.true;
+    expect(r5.has(e2)).to.be.true;
+
+  });
+
 
 
   it('tags', () => {

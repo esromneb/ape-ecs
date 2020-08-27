@@ -60,7 +60,8 @@ class Entity {
     }
 
     return (this.tags.has(type)
-      || this.types.hasOwnProperty(type));
+      || this.types.hasOwnProperty(type)
+      || this.id === type);
   }
 
   getOne(type) {

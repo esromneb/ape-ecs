@@ -93,6 +93,8 @@ class Query {
 
   not(...types) {
 
+    types = types.map((e) => (typeof e !== 'string') ? e.id : e);
+
     this.query.filters.push({
       filter: 'not',
       types
@@ -261,8 +263,9 @@ class Query {
     for (const filter of this.query.filters) {
       // istanbul ignore else
       if (filter.filter === 'not') {
+        // console.log(filter.types);
         for (const type of filter.types) {
-          if (entity.has(type)) {
+          if (entity.has(type) || entity.id === type) {
             this.results.delete(entity);
             break;
           }
